@@ -76,7 +76,7 @@ namespace web_api.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateCompany([FromBody]CreateCompanyDto companyDto)
+        public IActionResult CreateCompany([FromBody] CreateCompanyDto companyDto)
         {
             if (companyDto is null)
             {
@@ -115,6 +115,21 @@ namespace web_api.Controllers
             var ids = string.Join(",", returnCollection.Select(c => c.Id));
 
             return CreatedAtRoute("CompanyCollection", new { ids }, returnCollection);
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteCompany(Guid id)
+        {
+            var company = _repository.Company.GetCompany(id, trackChanges: false);
+            if (company is null)
+            {
+                _logger.LogInfo($"Company with id: {id} doesn't exist in the database.");
+                return NotFound();
+            }
+            _repository.Company.DeleteCompany(company);
+            _repository.Save();
+
+            return NoContent();
         }
 
     }
