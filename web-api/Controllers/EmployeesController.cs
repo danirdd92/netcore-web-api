@@ -66,7 +66,8 @@ namespace web_api.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateEmployeeForCompany(Guid companyId, [FromBody]CreateEmployeeDto employeeDto)
+        public IActionResult CreateEmployeeForCompany(Guid companyId, 
+                              [FromBody]CreateEmployeeDto employeeDto)
         {
             if (employeeDto is null)
             {
@@ -116,5 +117,34 @@ namespace web_api.Controllers
             return NoContent();
         }
 
+
+        [HttpPut("{id}")]
+        public IActionResult UpdateEmployeeForCompany(Guid companyId, Guid id, 
+                             [FromBody]UpdateEmployeeDto updateEmployeeDto)
+        {
+            if (updateEmployeeDto is null)
+            {
+                _logger.LogError("UpdatEmployeeDto object sent by client is null.");
+                return BadRequest("Object is null.");
+            }
+
+            var company = _repository.Company.GetCompany(companyId, trackChanges: false);
+            if (company is null)
+            {
+                _logger.LogInfo($"Company with id: {companyId} doesn't exist in the database.");
+                return NotFound();
+            }
+
+            var employeeEntity = _repository.Employee.GetEmployee(companyId, id, trackChanges: true); // <- Mind tracking is set to true
+            if (employeeEntity is null)
+            {
+                _logger.LogInfo($"Employee with id: {id} doesn't exist in the database.");
+                return NotFound();
+            }
+            _mapper.Map(updateEmployeeDto, employeeEntity); // while mapping from dto -> model  changes are made and tracked by ef core
+            _repository.Save();
+
+            return NoContent();
+        }
     }
 }

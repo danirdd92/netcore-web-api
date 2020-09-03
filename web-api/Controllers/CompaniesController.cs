@@ -132,5 +132,26 @@ namespace web_api.Controllers
             return NoContent();
         }
 
+        [HttpPut("{id}")]
+        public IActionResult UpdateCompany(Guid id, [FromBody] UpdateCompanyDto companyDto)
+        {
+            if (companyDto is null)
+            {
+                _logger.LogError("UpdateCompanyDto object sent by client is null.");
+                return BadRequest("Object is null");
+            }
+
+            var companyEntity = _repository.Company.GetCompany(id, trackChanges: true);
+            if (companyEntity is null)
+            {
+                _logger.LogInfo($"Company with id: {id} doesn't exist in the database.");
+                return NotFound();
+            }
+
+            _mapper.Map(companyDto, companyEntity);
+            _repository.Save();
+
+            return NoContent();
+        }
     }
 }

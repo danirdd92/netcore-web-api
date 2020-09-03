@@ -16,11 +16,17 @@ namespace web_api
                 .ForMember(c => c.FullAddress, options =>
                 options.MapFrom(x => string.Join(' ', x.Address, x.Country)));
 
-            CreateMap<Employee, EmployeeDto>();
 
+            // Source <--> Destination switched for none GET requests
+            CreateMap<Employee, EmployeeDto>();
+            
             CreateMap<CreateCompanyDto, Company>(); 
 
             CreateMap<CreateEmployeeDto, Employee>();
+
+            CreateMap<UpdateEmployeeDto, Employee>();
+
+            CreateMap<UpdateCompanyDto, Company>();
         }
     }
 }
