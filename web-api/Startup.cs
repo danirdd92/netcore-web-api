@@ -42,7 +42,14 @@ namespace web_api
 
             services.AddAutoMapper(typeof(Startup));
 
-            services.AddControllers();
+            
+            services.AddControllers(cofig =>
+            {
+                cofig.RespectBrowserAcceptHeader = true; // Allow other response types other than JSON
+                cofig.ReturnHttpNotAcceptable = true;    // Return 406 for unsupported media types
+            }).AddXmlDataContractSerializerFormatters()  // Add premade XML formatter
+              .AddCustomCSVFormatter();                  // Add Custom made CSV formatter
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerManager logger)
