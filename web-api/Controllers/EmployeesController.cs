@@ -73,6 +73,12 @@ namespace web_api.Controllers
                 return BadRequest("Object is null");
             }
 
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("Invalid model state for the CreateEmployeeDto object.");
+                return UnprocessableEntity(ModelState); // Returns 422 instead of 400
+            }
+
             var company = _repository.Company.GetCompany(companyId, trackChanges: false);
 
             if (company is null)
@@ -126,6 +132,12 @@ namespace web_api.Controllers
                 return BadRequest("Object is null.");
             }
 
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("Invalid model state for the updateEmployeeDto object");
+                return UnprocessableEntity(ModelState);
+            }
+
             var company = _repository.Company.GetCompany(companyId, trackChanges: false);
             if (company is null)
             {
@@ -171,7 +183,16 @@ namespace web_api.Controllers
             }
 
             var empToPatch = _mapper.Map<UpdateEmployeeDto>(employeeEntity);
-            patchDoc.ApplyTo(empToPatch);
+            patchDoc.ApplyTo(empToPatch, ModelState);
+
+            TryValidateModel(empToPatch); // Validate the model before any changed made on the db
+                                          // since we didn't map empToPatch into employeeEntity yet.
+
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("Invalid model state for the patch document.");
+                return UnprocessableEntity(ModelState);
+            }
 
             _mapper.Map(empToPatch, employeeEntity);
             _repository.Save();

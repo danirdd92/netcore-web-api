@@ -81,6 +81,11 @@ namespace web_api.Controllers
                 _logger.LogError("CreateCompanyDto object sent from client is null.");
                 return BadRequest("Object is null");
             }
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("Invalid model state for the companyDto object");
+                return UnprocessableEntity(ModelState);
+            }
 
             var companyEntity = _mapper.Map<Company>(companyDto); // maps the dto into a company model
 
@@ -99,6 +104,12 @@ namespace web_api.Controllers
             {
                 _logger.LogError("Company Collection sent from client is null.");
                 return BadRequest("Company collection is null");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("Invalid model state for one or more objects in companyCollection");
+                return UnprocessableEntity(ModelState);
             }
 
             var companyEntities = _mapper.Map<IEnumerable<Company>>(companyCollection);
@@ -137,6 +148,11 @@ namespace web_api.Controllers
             {
                 _logger.LogError("UpdateCompanyDto object sent by client is null.");
                 return BadRequest("Object is null");
+            }
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("Invalid model state for the companyDto object");
+                return UnprocessableEntity(ModelState);
             }
 
             var companyEntity = _repository.Company.GetCompany(id, trackChanges: true);
