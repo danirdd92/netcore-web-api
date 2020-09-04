@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using web_api.ActionFilters;
 
 namespace web_api.Controllers
 {
@@ -65,21 +66,10 @@ namespace web_api.Controllers
         }
 
         [HttpPost]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> CreateEmployeeForCompany(Guid companyId,
                               [FromBody] CreateEmployeeDto employeeDto)
         {
-            if (employeeDto is null)
-            {
-                _logger.LogError("CreateEmployeeDto object sent from client is null.");
-                return BadRequest("Object is null");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                _logger.LogError("Invalid model state for the CreateEmployeeDto object.");
-                return UnprocessableEntity(ModelState); // Returns 422 instead of 400
-            }
-
             var company = await _repository.Company.GetCompanyAsync(companyId, trackChanges: false);
 
             if (company is null)
@@ -100,21 +90,10 @@ namespace web_api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [ServiceFilter(typeof(ValidateEmployeeForCompanyExistsAttribute))]
         public async Task<IActionResult> DeleteEmployeeForCompany(Guid companyId, Guid id)
         {
-            var company = await _repository.Company.GetCompanyAsync(companyId, trackChanges: false);
-            if (company is null)
-            {
-                _logger.LogInfo($"Company with id: {companyId} doesn't exist in the database");
-                return NotFound();
-            }
-
-            var employeeToDelete = await  _repository.Employee.GetEmployeeAsync(companyId, id, trackChanges: false);
-            if (employeeToDelete is null)
-            {
-                _logger.LogInfo($"Employee with id: {id} doesn't exist in the database");
-                return NotFound();
-            }
+            var employeeToDelete = HttpContext.Items["employee"] as Employee;
 
             _repository.Employee.DeleteEmployee(employeeToDelete);
             await  _repository.SaveAsync();
@@ -124,34 +103,13 @@ namespace web_api.Controllers
 
 
         [HttpPut("{id}")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        [ServiceFilter(typeof(ValidateEmployeeForCompanyExistsAttribute))]
         public async Task<IActionResult> UpdateEmployeeForCompany(Guid companyId, Guid id,
                              [FromBody] UpdateEmployeeDto updateEmployeeDto)
         {
-            if (updateEmployeeDto is null)
-            {
-                _logger.LogError("UpdatEmployeeDto object sent by client is null.");
-                return BadRequest("Object is null.");
-            }
+            var employeeEntity = HttpContext.Items["employee"] as Employee;
 
-            if (!ModelState.IsValid)
-            {
-                _logger.LogError("Invalid model state for the updateEmployeeDto object");
-                return UnprocessableEntity(ModelState);
-            }
-
-            var company = await _repository.Company.GetCompanyAsync(companyId, trackChanges: false);
-            if (company is null)
-            {
-                _logger.LogInfo($"Company with id: {companyId} doesn't exist in the database.");
-                return NotFound();
-            }
-
-            var employeeEntity = await _repository.Employee.GetEmployeeAsync(companyId, id, trackChanges: true); // <- Mind tracking is set to true
-            if (employeeEntity is null)
-            {
-                _logger.LogInfo($"Employee with id: {id} doesn't exist in the database.");
-                return NotFound();
-            }
             _mapper.Map(updateEmployeeDto, employeeEntity); // while mapping from dto -> model  changes are made and tracked by ef core
             await  _repository.SaveAsync();
 
@@ -160,6 +118,7 @@ namespace web_api.Controllers
 
 
         [HttpPatch("{id}")]
+        [ServiceFilter(typeof(ValidateEmployeeForCompanyExistsAttribute))]
         public async Task<IActionResult> PartiallyUpdateEmoployeeForCompany(Guid companyId, Guid id,
                                              [FromBody] JsonPatchDocument<UpdateEmployeeDto> patchDoc)
         {
@@ -169,19 +128,7 @@ namespace web_api.Controllers
                 return BadRequest("Object is null.");
             }
 
-            var company = await _repository.Company.GetCompanyAsync(companyId, trackChanges: false);
-            if (company is null)
-            {
-                _logger.LogInfo($"Company with id: {companyId} doesn't exist in the database.");
-                return NotFound();
-            }
-
-            var employeeEntity = await _repository.Employee.GetEmployeeAsync(companyId, id, trackChanges: true);
-            if (employeeEntity is null)
-            {
-                _logger.LogInfo($"Employee with id: {id} doesn't exist in the database.");
-                return NotFound();
-            }
+            var employeeEntity = HttpContext.Items["employee"] as Employee;
 
             var empToPatch = _mapper.Map<UpdateEmployeeDto>(employeeEntity);
             patchDoc.ApplyTo(empToPatch, ModelState);

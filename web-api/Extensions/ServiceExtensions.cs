@@ -33,7 +33,7 @@ namespace web_api.Extensions
         public static void ConfigureLoggerService(this IServiceCollection services) =>
                            services.AddScoped<ILoggerManager, LoggerManager>();
 
-        public static void ConfigureSqlContext(this IServiceCollection services,
+        public static void ConfigureSqlDbContext(this IServiceCollection services,
                         IConfiguration configuration)
         {
             services.AddDbContext<RepositoryContext>(opts =>

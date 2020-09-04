@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NLog;
 using System.IO;
+using web_api.ActionFilters;
 using web_api.Extensions;
 
 namespace web_api
@@ -31,7 +32,7 @@ namespace web_api
             services.ConfigureIISIntegration();
             services.ConfigureLoggerService();
 
-            services.ConfigureSqlContext(Configuration);
+            services.ConfigureSqlDbContext(Configuration);
             services.ConfigureRepositoryManager();
 
             services.AddAutoMapper(typeof(Startup));
@@ -40,6 +41,10 @@ namespace web_api
             {
                 options.SuppressModelStateInvalidFilter = true; // Override BadRequest default
             });
+
+            services.AddScoped<ValidationFilterAttribute>();
+            services.AddScoped<ValidateCompanyExistsAttribute>();
+            services.AddScoped<ValidateEmployeeForCompanyExistsAttribute>();
 
             services.AddControllers(cofig =>
             {
