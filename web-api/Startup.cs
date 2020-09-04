@@ -40,7 +40,8 @@ namespace web_api
             {
                 cofig.RespectBrowserAcceptHeader = true; // Allow other response types other than JSON
                 cofig.ReturnHttpNotAcceptable = true;    // Return 406 for unsupported media types
-            }).AddXmlDataContractSerializerFormatters()  // Add premade XML formatter
+            }).AddNewtonsoftJson()
+              .AddXmlDataContractSerializerFormatters()  // Add premade XML formatter
               .AddCustomCSVFormatter();                  // Add Custom made CSV formatter
 
         }
