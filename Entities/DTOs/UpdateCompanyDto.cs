@@ -2,11 +2,8 @@
 
 namespace Entities.DTOs
 {
-    public class UpdateCompanyDto
+    public class UpdateCompanyDto : CompanyModificationDto
     {
-        public string Name { get; set; }
-        public string Address { get; set; }
-        public string Country { get; set; }
         public IEnumerable<CreateEmployeeDto> Employees { get; set; }
     }
 }

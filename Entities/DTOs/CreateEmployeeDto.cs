@@ -1,9 +1,6 @@
 ﻿namespace Entities.DTOs
 {
-    public class CreateEmployeeDto
+    public class CreateEmployeeDto : EmployeeModificationDto
     {
-        public string Name { get; set; }
-        public int Age { get; set; }
-        public string Position { get; set; }
     }
 }
