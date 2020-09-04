@@ -33,12 +33,16 @@ namespace web_api.Controllers
         public async Task<IActionResult> GetEmployeesForCompany(Guid companyId, [FromQuery]
                                                                 EmployeeParameters employeeParameters)
         {
+            if (!employeeParameters.ValidAgeRange)
+            {
+                return BadRequest("Minimum age can't be greater then max age.");
+            }
             var company = await _repository.Company.GetCompanyAsync(companyId, trackChanges:
             false);
             if (company == null)
             {
                 _logger.LogInfo($"Company with id: {companyId} doesn't exist in the database.");
-            return NotFound();
+                return NotFound();
             }
             var employeesFromDb = await _repository.Employee.GetEmployeesAsync(companyId,
             employeeParameters, trackChanges: false);
@@ -102,7 +106,7 @@ namespace web_api.Controllers
             var employeeToDelete = HttpContext.Items["employee"] as Employee;
 
             _repository.Employee.DeleteEmployee(employeeToDelete);
-            await  _repository.SaveAsync();
+            await _repository.SaveAsync();
 
             return NoContent();
         }
@@ -117,7 +121,7 @@ namespace web_api.Controllers
             var employeeEntity = HttpContext.Items["employee"] as Employee;
 
             _mapper.Map(updateEmployeeDto, employeeEntity); // while mapping from dto -> model  changes are made and tracked by ef core
-            await  _repository.SaveAsync();
+            await _repository.SaveAsync();
 
             return NoContent();
         }
@@ -149,7 +153,7 @@ namespace web_api.Controllers
             }
 
             _mapper.Map(empToPatch, employeeEntity);
-            await  _repository.SaveAsync();
+            await _repository.SaveAsync();
 
             return NoContent();
 

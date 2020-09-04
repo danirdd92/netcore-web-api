@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Entities.RequestFeatures
+﻿namespace Entities.RequestFeatures
 {
     public abstract class RequestParameters
     {
+        #region Paging
         const int MAX_PAGE_SIZE = 50;
 
         private int _pageSize = 10;
@@ -21,6 +18,11 @@ namespace Entities.RequestFeatures
             }
         }
         public int PageNumber { get; set; } = 1;
+        #endregion
+
+        #region Sorting
+        public string OrderBy { get; set; }
+        #endregion
 
     }
 }

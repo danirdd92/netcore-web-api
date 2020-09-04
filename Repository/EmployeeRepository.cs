@@ -3,8 +3,8 @@ using Entities;
 using Entities.Models;
 using Entities.RequestFeatures;
 using Microsoft.EntityFrameworkCore;
+using Repository.Extensions;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -27,20 +27,27 @@ namespace Repository
         public void DeleteEmployee(Employee employee) => Delete(employee);
 
 
-        public async Task<Employee> GetEmployeeAsync(Guid companyId, Guid id, bool trackChanges) =>
-
-            await FindByCondition(e => e.CompanyId.Equals(companyId) && e.Id.Equals(id),
+        public async Task<Employee> GetEmployeeAsync(Guid companyId,
+                                    Guid id, bool trackChanges) =>
+            await FindByCondition(e => e.CompanyId.Equals(companyId)
+                                  && e.Id.Equals(id),
                 trackChanges).SingleOrDefaultAsync();
 
         public async Task<PagedList<Employee>> GetEmployeesAsync(Guid companyId,
-                                                        EmployeeParameters employeeParameters, bool trackChanges)
+                       EmployeeParameters employeeParameters, bool trackChanges)
         {
-            var employees = await FindByCondition(e => e.CompanyId.Equals(companyId), trackChanges)
-                                                 .OrderBy(e => e.Name)
-                                                 .ToListAsync();
+            var employees = await FindByCondition(e => e.CompanyId.Equals(companyId),
+                                trackChanges)
+                                .FilterEmployees(employeeParameters.MinAge,
+                                                 employeeParameters.MaxAge)
+                                .Sort(employeeParameters.OrderBy)
+                                .Search(employeeParameters.SearchTerm)
+                                .OrderBy(e => e.Name)
+                                .ToListAsync();
+
             return PagedList<Employee>.ToPagedList(employees,
-                                                   employeeParameters.PageNumber,
-                                                   employeeParameters.PageSize);
+                 employeeParameters.PageNumber,
+                 employeeParameters.PageSize);
         }
     }
 }

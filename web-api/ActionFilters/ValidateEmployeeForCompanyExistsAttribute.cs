@@ -2,9 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 
 namespace web_api.ActionFilters
@@ -24,7 +21,7 @@ namespace web_api.ActionFilters
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             var method = context.HttpContext.Request.Method;
-            var trackChanges = (method.Equals("PUT") || method.Equals("PATCH")) 
+            var trackChanges = (method.Equals("PUT") || method.Equals("PATCH"))
                 ? true : false;
 
             var companyId = (Guid)context.ActionArguments["companyId"];
