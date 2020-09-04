@@ -20,7 +20,6 @@ namespace web_api
 
             CreateMap<CreateEmployeeDto, Employee>();
 
-            CreateMap<UpdateEmployeeDto, Employee>();
             CreateMap<UpdateEmployeeDto, Employee>().ReverseMap(); // Allow two-way mapping
 
             CreateMap<UpdateCompanyDto, Company>();
