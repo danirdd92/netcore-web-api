@@ -1,7 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
+
+/// <summary>
+/// Dto objects do not contain EF related markup
+/// </summary>
 namespace Entities.DTOs
 {
     public class EmployeeDto

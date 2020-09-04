@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Contracts;
 using Entities.DTOs;
 using Entities.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
 
 namespace web_api.Controllers
 {
@@ -66,8 +63,8 @@ namespace web_api.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateEmployeeForCompany(Guid companyId, 
-                              [FromBody]CreateEmployeeDto employeeDto)
+        public IActionResult CreateEmployeeForCompany(Guid companyId,
+                              [FromBody] CreateEmployeeDto employeeDto)
         {
             if (employeeDto is null)
             {
@@ -119,8 +116,8 @@ namespace web_api.Controllers
 
 
         [HttpPut("{id}")]
-        public IActionResult UpdateEmployeeForCompany(Guid companyId, Guid id, 
-                             [FromBody]UpdateEmployeeDto updateEmployeeDto)
+        public IActionResult UpdateEmployeeForCompany(Guid companyId, Guid id,
+                             [FromBody] UpdateEmployeeDto updateEmployeeDto)
         {
             if (updateEmployeeDto is null)
             {

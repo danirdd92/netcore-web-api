@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Net.Http.Headers;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -40,11 +39,12 @@ namespace web_api
                 {
                     FormatCvs(buffer, company);
                 }
-            } else
+            }
+            else
             {
                 FormatCvs(buffer, (CompanyDto)context.Object);
             }
-            
+
             await response.WriteAsync(buffer.ToString());
         }
 

@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
@@ -39,7 +38,7 @@ namespace web_api.ModelBinders
 
             bindingContext.Result = ModelBindingResult.Success(bindingContext.Model);
             return Task.CompletedTask;
-                
+
         }
     }
 }

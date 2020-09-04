@@ -1,13 +1,13 @@
 ﻿using Entities.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Entities.Configuration
 {
+    /// <summary>
+    /// Initial Data Seeding For the Db
+    /// </summary>
     public class CompanyConfiguration : IEntityTypeConfiguration<Company>
     {
         public void Configure(EntityTypeBuilder<Company> builder)

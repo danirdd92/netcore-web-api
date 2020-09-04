@@ -1,10 +1,6 @@
 ﻿using AutoMapper;
 using Entities.DTOs;
 using Entities.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace web_api
 {
@@ -19,8 +15,8 @@ namespace web_api
 
             // Source <--> Destination switched for none GET requests
             CreateMap<Employee, EmployeeDto>();
-            
-            CreateMap<CreateCompanyDto, Company>(); 
+
+            CreateMap<CreateCompanyDto, Company>();
 
             CreateMap<CreateEmployeeDto, Employee>();
 
