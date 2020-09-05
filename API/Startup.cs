@@ -52,15 +52,17 @@ namespace API
             });
 
             services.ConfigureVersioning();
+            services.ConfigureResponseCaching();
 
             services.AddControllers(config =>
            {
                config.RespectBrowserAcceptHeader = true;
                config.ReturnHttpNotAcceptable = true;
+               config.CacheProfiles.Add("120SecondDuration", new CacheProfile { Duration = 120 });
            }).AddNewtonsoftJson()
            .AddXmlDataContractSerializerFormatters()
            .AddCustomCSVFormatter();
-            
+
             services.AddCustomMediaTypes();
 
         }
@@ -87,6 +89,8 @@ namespace API
             {
                 ForwardedHeaders = ForwardedHeaders.All
             });
+
+            app.UseResponseCaching();
 
             app.UseRouting();
 
