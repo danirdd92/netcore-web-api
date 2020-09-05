@@ -1,4 +1,5 @@
-﻿using Contracts;
+﻿using AspNetCoreRateLimit;
+using Contracts;
 using Entities;
 using LoggerService;
 using Marvin.Cache.Headers;
@@ -11,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Repository;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace API.Extensions
@@ -85,6 +87,10 @@ namespace API.Extensions
         public static void ConfigureResponseCaching(this IServiceCollection services) =>
             services.AddResponseCaching();
 
+        /// <summary>
+        /// //Marvin is not best suited for cache validation, should consider combining with 
+        // 3rd party CDN or the likes of Apache Traffic Server for optimal result.
+        /// </summary>
         public static void ConfigureHttpCacheHeaders(this IServiceCollection services) =>
             services.AddHttpCacheHeaders(
                 (experiationOpt) =>
@@ -96,7 +102,26 @@ namespace API.Extensions
                 validationOpt.MustRevalidate = true;
             });
 
-        //Marvin is not best suited for cache validation, should consider combining with 
-        // 3rd party CDN or the likes of Apache Traffic Server for optimal result.
+        public static void ConfigureRateLimitingOptions(this IServiceCollection services)
+        {
+            var rateLimitRules = new List<RateLimitRule>
+            {
+                new RateLimitRule
+                {
+                    Endpoint = "*",
+                    Limit = 10,
+                    Period = "5m"
+                }
+            };
+
+            services.Configure<IpRateLimitOptions>(opt =>
+                    opt.GeneralRules = rateLimitRules);
+
+            services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
+            services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
+            services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+        }
+
+       
     }
 }

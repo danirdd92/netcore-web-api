@@ -14,6 +14,7 @@ using Microsoft.Extensions.Hosting;
 using NLog;
 using Repository.DataShaping;
 using System.IO;
+using AspNetCoreRateLimit;
 
 namespace API
 {
@@ -55,6 +56,11 @@ namespace API
             services.ConfigureResponseCaching();
             services.ConfigureHttpCacheHeaders();
 
+            services.AddMemoryCache(); // Not to confuse with caching, this service caches rules and timers for rate limiting
+
+            services.ConfigureRateLimitingOptions();
+            services.AddHttpContextAccessor();
+
             services.AddControllers(config =>
            {
                config.RespectBrowserAcceptHeader = true;
@@ -92,6 +98,8 @@ namespace API
             });
 
             app.UseResponseCaching();
+
+            app.UseIpRateLimiting();
 
             app.UseRouting();
 
