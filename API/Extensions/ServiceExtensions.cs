@@ -52,6 +52,8 @@ namespace API.Extensions
                 if (newtonsoftJsonOutputFormatter != null)
                 {
                     newtonsoftJsonOutputFormatter.SupportedMediaTypes.Add("application/dr.sample.hateoas+json");
+                    newtonsoftJsonOutputFormatter.SupportedMediaTypes.Add("application/dr.sample.apiroot+json");
+
                 }
 
                 var xmlOutputFormatter = config.OutputFormatters
@@ -60,9 +62,9 @@ namespace API.Extensions
                 if (xmlOutputFormatter != null)
                 {
                     xmlOutputFormatter.SupportedMediaTypes.Add("application/vnd.codemaze.hateoas+xml");
+                    xmlOutputFormatter.SupportedMediaTypes.Add("application/vnd.codemaze.apiroot+xml");
                 }
             });
         }
-
     }
 }
