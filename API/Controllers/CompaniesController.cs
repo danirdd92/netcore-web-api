@@ -9,13 +9,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Marvin.Cache.Headers;
 
 namespace API.Controllers
 {
     [ApiVersion("1.0")]
     [Route("api/companies")]
     [ApiController]
-    [ResponseCache(CacheProfileName = "120SecondsDuration")] // Applies to all actions except for ones with existing Response cache
+    //[ResponseCache(CacheProfileName = "120SecondsDuration")] // Applies to all actions except for ones with existing Response cache
     public class CompaniesController : ControllerBase
     {
         private readonly IRepositoryManager _repository;
@@ -40,7 +41,9 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}", Name = "CompanyById")]
-        [ResponseCache(Duration = 60)]
+     // [ResponseCache(Duration = 60)] --> Response Cache Headers are provided by Marvin.Cache.Headers package
+        [HttpCacheExpiration(CacheLocation = CacheLocation.Public, MaxAge = 60)] //Override our global implementation
+        [HttpCacheValidation(MustRevalidate = false)]                            //^
         public async Task<IActionResult> GetCompany(Guid id)
         {
             var company = await _repository.Company.GetCompanyAsync(id, trackChanges: false);

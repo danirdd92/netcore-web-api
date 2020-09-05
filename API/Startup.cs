@@ -53,6 +53,7 @@ namespace API
 
             services.ConfigureVersioning();
             services.ConfigureResponseCaching();
+            services.ConfigureHttpCacheHeaders();
 
             services.AddControllers(config =>
            {

@@ -1,6 +1,7 @@
 ﻿using Contracts;
 using Entities;
 using LoggerService;
+using Marvin.Cache.Headers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
@@ -83,5 +84,19 @@ namespace API.Extensions
 
         public static void ConfigureResponseCaching(this IServiceCollection services) =>
             services.AddResponseCaching();
+
+        public static void ConfigureHttpCacheHeaders(this IServiceCollection services) =>
+            services.AddHttpCacheHeaders(
+                (experiationOpt) =>
+            {
+                experiationOpt.MaxAge = 65;
+                experiationOpt.CacheLocation = CacheLocation.Private;
+            }, (validationOpt) =>
+            {
+                validationOpt.MustRevalidate = true;
+            });
+
+        //Marvin is not best suited for cache validation, should consider combining with 
+        // 3rd party CDN or the likes of Apache Traffic Server for optimal result.
     }
 }
