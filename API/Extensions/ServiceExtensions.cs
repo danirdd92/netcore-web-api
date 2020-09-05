@@ -64,8 +64,8 @@ namespace API.Extensions
 
                 if (xmlOutputFormatter != null)
                 {
-                    xmlOutputFormatter.SupportedMediaTypes.Add("application/vnd.codemaze.hateoas+xml");
-                    xmlOutputFormatter.SupportedMediaTypes.Add("application/vnd.codemaze.apiroot+xml");
+                    xmlOutputFormatter.SupportedMediaTypes.Add("application/dr.sample.hateoas+json");
+                    xmlOutputFormatter.SupportedMediaTypes.Add("application/dr.sample.apiroot+json");
                 }
             });
         }
