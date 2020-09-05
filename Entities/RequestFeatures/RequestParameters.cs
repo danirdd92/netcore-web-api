@@ -24,5 +24,10 @@
         public string OrderBy { get; set; }
         #endregion
 
+        #region Data Shaping
+        public string Fields { get; set; }
+
+        #endregion
+
     }
 }

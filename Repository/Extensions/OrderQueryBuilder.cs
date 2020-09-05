@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -22,7 +21,7 @@ namespace Repository.Extensions
                 var propertyFromQueryName = param.Split(" ")[0];
                 var objectProperty = properyInfos
                     .FirstOrDefault(p => p.Name.Equals(propertyFromQueryName, StringComparison.InvariantCultureIgnoreCase)); // check if included param has a coresponding 
-                                                                     // property on the T class to use
+                                                                                                                             // property on the T class to use
 
                 if (objectProperty is null) continue; // if unfound skip to next param
 
@@ -32,7 +31,7 @@ namespace Repository.Extensions
             }
 
             var orderQuery = orderQueryBuilder.ToString().TrimEnd(',', ' '); // remove unnecesery ',' from end of query
-            
+
             return orderQuery;
         }
     }
