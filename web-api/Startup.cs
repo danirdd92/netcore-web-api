@@ -13,6 +13,7 @@ using Repository.DataShaping;
 using System.IO;
 using web_api.ActionFilters;
 using web_api.Extensions;
+using web_api.Utility;
 
 namespace web_api
 {
@@ -42,7 +43,12 @@ namespace web_api
             services.AddScoped<ValidationFilterAttribute>();
             services.AddScoped<ValidateCompanyExistsAttribute>();
             services.AddScoped<ValidateEmployeeForCompanyExistsAttribute>();
+
             services.AddScoped<IDataShaper<EmployeeDto>, DataShaper<EmployeeDto>>();
+
+            services.AddScoped<ValidateMediaTypeAttribute>();
+
+            services.AddScoped<EmployeeLinks>();
 
             services.Configure<ApiBehaviorOptions>(options =>
             {
@@ -57,6 +63,7 @@ namespace web_api
               .AddXmlDataContractSerializerFormatters()  // Add premade XML formatter
               .AddCustomCSVFormatter();                  // Add Custom made CSV formatter
 
+            services.AddCustomMediaTypes(); // Support Custom MediaType for HATEOAS
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerManager logger)
