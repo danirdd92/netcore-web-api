@@ -1,9 +1,13 @@
-﻿namespace Entities.RequestFeatures
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Entities.RequestFeatures
 {
     public abstract class RequestParameters
     {
-        #region Paging
-        const int MAX_PAGE_SIZE = 50;
+        const int maxPageSize = 50;
+        public int PageNumber { get; set; } = 1;
 
         private int _pageSize = 10;
         public int PageSize
@@ -14,20 +18,12 @@
             }
             set
             {
-                _pageSize = (value > MAX_PAGE_SIZE) ? MAX_PAGE_SIZE : value;
+                _pageSize = (value > maxPageSize) ? maxPageSize : value;
             }
         }
-        public int PageNumber { get; set; } = 1;
-        #endregion
-
-        #region Sorting
+        
         public string OrderBy { get; set; }
-        #endregion
 
-        #region Data Shaping
         public string Fields { get; set; }
-
-        #endregion
-
     }
 }

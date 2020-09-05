@@ -3,14 +3,17 @@ using Entities.ErrorModel;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 
-namespace web_api.Extensions
+namespace API.Extensions
 {
-    public static class ExceptionMiddlewareExtentions
+    public static class ExceptionMiddlewareExtensions
     {
-        public static void ConfigureExceptionHandler(this IApplicationBuilder app,
-                                                       ILoggerManager logger)
+        public static void ConfigureExceptionHandler(this IApplicationBuilder app, ILoggerManager logger)
         {
             app.UseExceptionHandler(appError =>
             {
@@ -33,5 +36,6 @@ namespace web_api.Extensions
                 });
             });
         }
+
     }
 }

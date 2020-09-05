@@ -1,6 +1,9 @@
 using AutoMapper;
+using API.ActionFilters;
+using API.Extensions;
+using API.Utility;
 using Contracts;
-using Entities.DTOs;
+using Entities.DataTransferObjects;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -11,35 +14,28 @@ using Microsoft.Extensions.Hosting;
 using NLog;
 using Repository.DataShaping;
 using System.IO;
-using web_api.ActionFilters;
-using web_api.Extensions;
-using web_api.Utility;
 
-namespace web_api
+namespace API
 {
     public class Startup
     {
         public Startup(IConfiguration configuration)
         {
-            LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(),
-                                        "/nlog.config"));
-
+            LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
             Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
 
+        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.ConfigureCors();
             services.ConfigureIISIntegration();
             services.ConfigureLoggerService();
-
-            services.ConfigureSqlDbContext(Configuration);
+            services.ConfigureSqlContext(Configuration);
             services.ConfigureRepositoryManager();
-
             services.AddAutoMapper(typeof(Startup));
-
             services.AddScoped<ValidationFilterAttribute>();
             services.AddScoped<ValidateCompanyExistsAttribute>();
             services.AddScoped<ValidateEmployeeForCompanyExistsAttribute>();
@@ -52,31 +48,37 @@ namespace web_api
 
             services.Configure<ApiBehaviorOptions>(options =>
             {
-                options.SuppressModelStateInvalidFilter = true; // Override BadRequest default
+                options.SuppressModelStateInvalidFilter = true;
             });
 
-            services.AddControllers(cofig =>
-            {
-                cofig.RespectBrowserAcceptHeader = true; // Allow other response types other than JSON
-                cofig.ReturnHttpNotAcceptable = true;    // Return 406 for unsupported media types
-            }).AddNewtonsoftJson()
-              .AddXmlDataContractSerializerFormatters()  // Add premade XML formatter
-              .AddCustomCSVFormatter();                  // Add Custom made CSV formatter
+            services.AddControllers(config =>
+           {
+               config.RespectBrowserAcceptHeader = true;
+               config.ReturnHttpNotAcceptable = true;
+           }).AddNewtonsoftJson()
+           .AddXmlDataContractSerializerFormatters()
+           .AddCustomCSVFormatter();
+            
+            services.AddCustomMediaTypes();
 
-            services.AddCustomMediaTypes(); // Support Custom MediaType for HATEOAS
         }
 
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerManager logger)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseHsts();
+            }
 
             app.ConfigureExceptionHandler(logger);
             app.UseHttpsRedirection();
-
             app.UseStaticFiles();
+
             app.UseCors("CorsPolicy");
 
             app.UseForwardedHeaders(new ForwardedHeadersOptions

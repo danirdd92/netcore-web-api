@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Entities.LinkModels
 {
@@ -8,7 +6,8 @@ namespace Entities.LinkModels
     {
         public List<T> Value { get; set; } = new List<T>();
 
-        public LinkCollectionWrapper() { }
+        public LinkCollectionWrapper()
+        {}
 
         public LinkCollectionWrapper(List<T> value)
         {

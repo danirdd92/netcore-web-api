@@ -4,20 +4,13 @@
     {
         public EmployeeParameters()
         {
-            OrderBy = "name"; // default sort
+            OrderBy = "name";
         }
-
-        #region Filtering
         public uint MinAge { get; set; }
         public uint MaxAge { get; set; } = int.MaxValue;
 
         public bool ValidAgeRange => MaxAge > MinAge;
-        #endregion
 
-        #region Searching
         public string SearchTerm { get; set; }
-
-        #endregion
-
     }
 }

@@ -2,32 +2,32 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
-namespace web_api.ActionFilters
+namespace API.ActionFilters
 {
     public class ValidateEmployeeForCompanyExistsAttribute : IAsyncActionFilter
     {
-        private readonly ILoggerManager _logger;
         private readonly IRepositoryManager _repository;
+        private readonly ILoggerManager _logger;
 
-        public ValidateEmployeeForCompanyExistsAttribute(ILoggerManager logger,
-                                                         IRepositoryManager repository)
+        public ValidateEmployeeForCompanyExistsAttribute(IRepositoryManager repository, ILoggerManager logger)
         {
-            _logger = logger;
             _repository = repository;
+            _logger = logger;
         }
 
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             var method = context.HttpContext.Request.Method;
-            var trackChanges = (method.Equals("PUT") || method.Equals("PATCH"))
-                ? true : false;
+            var trackChanges = (method.Equals("PUT") || method.Equals("PATCH")) ? true : false;
 
             var companyId = (Guid)context.ActionArguments["companyId"];
             var company = await _repository.Company.GetCompanyAsync(companyId, false);
 
-            if (company is null)
+            if (company == null)
             {
                 _logger.LogInfo($"Company with id: {companyId} doesn't exist in the database.");
                 context.Result = new NotFoundResult();
@@ -36,7 +36,8 @@ namespace web_api.ActionFilters
 
             var id = (Guid)context.ActionArguments["id"];
             var employee = await _repository.Employee.GetEmployeeAsync(companyId, id, trackChanges);
-            if (employee is null)
+
+            if(employee == null)
             {
                 _logger.LogInfo($"Employee with id: {id} doesn't exist in the database.");
                 context.Result = new NotFoundResult();

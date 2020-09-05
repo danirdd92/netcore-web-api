@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Entities.LinkModels
+﻿namespace Entities.LinkModels
 {
     public class Link
     {
@@ -10,7 +6,8 @@ namespace Entities.LinkModels
         public string Rel { get; set; }
         public string Method { get; set; }
 
-        public Link() { }
+        public Link()
+        { }
 
         public Link(string href, string rel, string method)
         {
@@ -18,7 +15,5 @@ namespace Entities.LinkModels
             Rel = rel;
             Method = method;
         }
-
-
     }
 }

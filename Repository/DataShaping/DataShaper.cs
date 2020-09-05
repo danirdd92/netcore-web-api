@@ -2,7 +2,6 @@
 using Entities.Models;
 using System;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.Linq;
 using System.Reflection;
 
@@ -58,8 +57,7 @@ namespace Repository.DataShaping
             return requiredProperties;
         }
 
-        public IEnumerable<ShapedEntity> FetchData(IEnumerable<T> entities,
-                                                    IEnumerable<PropertyInfo> requiredProperties)
+        private IEnumerable<ShapedEntity> FetchData(IEnumerable<T> entities, IEnumerable<PropertyInfo> requiredProperties)
         {
             var shapedData = new List<ShapedEntity>();
 
@@ -69,11 +67,10 @@ namespace Repository.DataShaping
                 shapedData.Add(shapedObject);
             }
 
-
             return shapedData;
         }
 
-        public ShapedEntity FetchDataForEntity(T entity, IEnumerable<PropertyInfo> requiredProperties)
+        private ShapedEntity FetchDataForEntity(T entity, IEnumerable<PropertyInfo> requiredProperties)
         {
             var shapedObject = new ShapedEntity();
 

@@ -6,20 +6,22 @@ namespace Repository
 {
     public class RepositoryManager : IRepositoryManager
     {
-        private readonly RepositoryContext _context;
+        private RepositoryContext _repositoryContext;
         private ICompanyRepository _companyRepository;
         private IEmployeeRepository _employeeRepository;
 
-        public RepositoryManager(RepositoryContext context)
+        public RepositoryManager(RepositoryContext repositoryContext)
         {
-            _context = context;
+            _repositoryContext = repositoryContext;
         }
+
         public ICompanyRepository Company
         {
             get
             {
-                if (_companyRepository is null)
-                    _companyRepository = new CompanyRepository(_context);
+                if (_companyRepository == null)
+                    _companyRepository = new CompanyRepository(_repositoryContext);
+
                 return _companyRepository;
             }
         }
@@ -28,12 +30,12 @@ namespace Repository
         {
             get
             {
-                if (_employeeRepository is null)
-                    _employeeRepository = new EmployeeRepository(_context);
+                if (_employeeRepository == null)
+                    _employeeRepository = new EmployeeRepository(_repositoryContext);
+
                 return _employeeRepository;
             }
         }
-
-        public Task SaveAsync() => _context.SaveChangesAsync();
+        public Task SaveAsync() => _repositoryContext.SaveChangesAsync();
     }
 }

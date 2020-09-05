@@ -1,5 +1,5 @@
 ﻿using Contracts;
-using Entities.DTOs;
+using Entities.DataTransferObjects;
 using Entities.LinkModels;
 using Entities.Models;
 using Microsoft.AspNetCore.Http;
@@ -8,9 +8,8 @@ using Microsoft.Net.Http.Headers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
-namespace web_api.Utility
+namespace API.Utility
 {
     public class EmployeeLinks
     {
@@ -45,14 +44,9 @@ namespace web_api.Utility
             return mediaType.SubTypeWithoutSuffix.EndsWith("hateoas", StringComparison.InvariantCultureIgnoreCase);
         }
 
-        private LinkResponse ReturnShapedEmployees(List<Entity> shapedEmployees) => 
-            new LinkResponse { ShapedEntities = shapedEmployees };
+        private LinkResponse ReturnShapedEmployees(List<Entity> shapedEmployees) => new LinkResponse { ShapedEntities = shapedEmployees };
 
-        private LinkResponse ReturnLinkdedEmployees(IEnumerable<EmployeeDto> employeesDto,
-                                                   string fields,
-                                                   Guid companyId,
-                                                   HttpContext httpContext,
-                                                   List<Entity> shapedEmployees)
+        private LinkResponse ReturnLinkdedEmployees(IEnumerable<EmployeeDto> employeesDto, string fields, Guid companyId, HttpContext httpContext, List<Entity> shapedEmployees)
         {
             var employeeDtoList = employeesDto.ToList();
 
@@ -72,21 +66,18 @@ namespace web_api.Utility
         {
             var links = new List<Link>
             {
-                new Link(_linkGenerator.GetUriByAction(httpContext, "GetEmployeeForCompany",
-                                                       values: new { companyId, id, fields }),
-                                                       "self", "GET"),
-
-                new Link(_linkGenerator.GetUriByAction(httpContext, "DeleteEmployeeForCompany",
-                                                       values: new { companyId, id }),
-                                                       "delete_employee","DELETE"),
-
-                new Link(_linkGenerator.GetUriByAction(httpContext, "UpdateEmployeeForCompany",
-                                                       values: new { companyId, id }),
-                                                       "update_employee","PUT"),
-
-                new Link(_linkGenerator.GetUriByAction(httpContext, "PartiallyUpdateEmployeeForCompany",
-                                                       values: new { companyId, id }),
-                                                       "partially_update_employee","PATCH")
+                new Link(_linkGenerator.GetUriByAction(httpContext, "GetEmployeeForCompany", values: new { companyId, id, fields }),
+                "self",
+                "GET"),
+                new Link(_linkGenerator.GetUriByAction(httpContext, "DeleteEmployeeForCompany", values: new { companyId, id }),
+                "delete_employee",
+                "DELETE"),
+                new Link(_linkGenerator.GetUriByAction(httpContext, "UpdateEmployeeForCompany", values: new { companyId, id }),
+                "update_employee",
+                "PUT"),
+                new Link(_linkGenerator.GetUriByAction(httpContext, "PartiallyUpdateEmployeeForCompany", values: new { companyId, id }),
+                "partially_update_employee",
+                "PATCH")
             };
 
             return links;
@@ -94,8 +85,9 @@ namespace web_api.Utility
 
         private LinkCollectionWrapper<Entity> CreateLinksForEmployees(HttpContext httpContext, LinkCollectionWrapper<Entity> employeesWrapper)
         {
-            employeesWrapper.Links.Add(new Link(_linkGenerator.GetUriByAction(httpContext, "GetEmployeesForCompany",
-                                                                values: new { }), "self", "GET"));
+            employeesWrapper.Links.Add(new Link(_linkGenerator.GetUriByAction(httpContext, "GetEmployeesForCompany", values: new { }),
+                    "self",
+                    "GET"));
 
             return employeesWrapper;
         }
