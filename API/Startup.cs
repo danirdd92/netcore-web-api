@@ -62,6 +62,9 @@ namespace API
             services.ConfigureJWT(Configuration);
             services.AddScoped<IAuthenticationManager, AuthenticationManager>();
 
+            services.AddMvc();
+            services.ConfigureSwagger();
+
             services.Configure<ApiBehaviorOptions>(options =>
             {
                 options.SuppressModelStateInvalidFilter = true;
@@ -112,6 +115,13 @@ namespace API
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseSwagger();
+            app.UseSwaggerUI(s =>
+            {
+                s.SwaggerEndpoint("/swagger/v1/swagger.json", "Sample API v1");
+                s.SwaggerEndpoint("/swagger/v2/swagger.json", "Sample API v2");
+            });
 
             app.UseEndpoints(endpoints =>
             {

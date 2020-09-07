@@ -17,6 +17,7 @@ namespace API.Controllers
     [ApiVersion("1.0")]
     [Route("api/companies")]
     [ApiController]
+    [ApiExplorerSettings(GroupName = "v1")]
     //[ResponseCache(CacheProfileName = "120SecondsDuration")] // Applies to all actions except for ones with existing Response cache
     public class CompaniesController : ControllerBase
     {

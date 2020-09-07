@@ -11,6 +11,7 @@ namespace API.Controllers
     [ApiVersion("2.0", Deprecated = true)] // Will notify client that this version is depricated
     [Route("api/companies")]  //[Route("api/{v:apiversion}/companies")] enforces using URL versioning
     [ApiController]
+    [ApiExplorerSettings(GroupName = "v2")]
     public class CompaniesV2Controller : ControllerBase
     {
         private readonly IRepositoryManager _repository;
