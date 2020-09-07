@@ -47,26 +47,32 @@ namespace API
 
             services.AddScoped<EmployeeLinks>();
 
+            services.ConfigureVersioning();
+
+            services.ConfigureResponseCaching();
+            services.ConfigureHttpCacheHeaders();
+
+            services.AddMemoryCache();
+
+            services.ConfigureRateLimitingOptions();
+            services.AddHttpContextAccessor();
+
+            services.AddAuthentication();
+            services.ConfigureIdentity();
+            services.ConfigureJWT(Configuration);
+            services.AddScoped<IAuthenticationManager, AuthenticationManager>();
+
             services.Configure<ApiBehaviorOptions>(options =>
             {
                 options.SuppressModelStateInvalidFilter = true;
             });
 
-            services.ConfigureVersioning();
-            services.ConfigureResponseCaching();
-            services.ConfigureHttpCacheHeaders();
-
-            services.AddMemoryCache(); // Not to confuse with caching, this service caches rules and timers for rate limiting
-
-            services.ConfigureRateLimitingOptions();
-            services.AddHttpContextAccessor();
-
             services.AddControllers(config =>
-           {
-               config.RespectBrowserAcceptHeader = true;
-               config.ReturnHttpNotAcceptable = true;
-               config.CacheProfiles.Add("120SecondDuration", new CacheProfile { Duration = 120 });
-           }).AddNewtonsoftJson()
+            {
+                config.RespectBrowserAcceptHeader = true;
+                config.ReturnHttpNotAcceptable = true;
+                config.CacheProfiles.Add("120SecondsDuration", new CacheProfile { Duration = 120 });
+            }).AddNewtonsoftJson()
            .AddXmlDataContractSerializerFormatters()
            .AddCustomCSVFormatter();
 
@@ -98,11 +104,13 @@ namespace API
             });
 
             app.UseResponseCaching();
+            app.UseHttpCacheHeaders();
 
             app.UseIpRateLimiting();
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
